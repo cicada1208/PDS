@@ -1,0 +1,47 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:models="clr-namespace:Models;assembly=Models">
+
+    <HierarchicalDataTemplate 
+            x:Key="HDTemplate.Function" 
+            DataType="{x:Type models:Function}"
+            ItemsSource="{Binding Path=Functions, ValidatesOnNotifyDataErrors=False}">
+        <TextBlock Text="{Binding Path=Title, ValidatesOnNotifyDataErrors=False}" Margin="0,5" />
+    </HierarchicalDataTemplate>
+
+    <Style 
+            x:Key="Style.Function.MenuItem" 
+            TargetType="{x:Type MenuItem}">
+        <Setter Property="Command"
+                Value="{Binding DataContext.SelectFuncCommand, 
+                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Menu}},
+                ValidatesOnNotifyDataErrors=False}" />
+        <Setter Property="CommandParameter" Value="{Binding}" />
+    </Style>
+
+    <DataTemplate 
+            x:Key="DTemplate.Function.TabItem.Header" 
+            DataType="{x:Type models:Function}">
+        <DockPanel LastChildFill="True">
+            <Button Content="X" DockPanel.Dock="Right"
+                    Command="{Binding DataContext.CloseFuncCommand, 
+                    RelativeSource={RelativeSource AncestorType={x:Type TabControl}},
+                    ValidatesOnNotifyDataErrors=False}"
+                    CommandParameter="{Binding}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Label FontWeight="Bold" Content="X" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Label Content="{Binding Title, ValidatesOnNotifyDataErrors=False}" />
+        </DockPanel>
+    </DataTemplate>
+
+    <DataTemplate 
+            x:Key="DTemplate.Function.TabItem.Content" 
+            DataType="{x:Type models:Function}">
+        <UserControl Content="{Binding ContentInstance, ValidatesOnNotifyDataErrors=False}" />
+    </DataTemplate>
+
+</ResourceDictionary>

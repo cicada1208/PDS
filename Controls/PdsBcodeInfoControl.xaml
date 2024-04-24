@@ -1,0 +1,196 @@
+﻿<UserControl x:Class="Controls.PdsBcodeInfoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:Controls"
+             xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+             xmlns:models="clr-namespace:Models;assembly=Models" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:PdsBcodeInfoViewModel}"
+             mc:Ignorable="d" Name="PdsBcodeInfo">
+
+    <UserControl.Resources>
+        <Style 
+            x:Key="Style.BcodeInfo.TextBlock.TextVertical" 
+            BasedOn="{StaticResource Style.TextBlock.AutoSize}"
+            TargetType="TextBlock">
+            <Setter Property="Width" Value="20" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+
+        <Style 
+            x:Key="Style.BcodeInfo.TextBlock"
+            BasedOn="{StaticResource Style.TextBlock.AutoSize}"
+            TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style 
+            x:Key="Style.BcodeInfo.DayGroup.GroupItem" 
+            TargetType="{x:Type GroupItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" PanningMode="Both">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock 
+                                    Text="{Binding Name}"
+                                    Style="{StaticResource Style.BcodeInfo.TextBlock.TextVertical}"/>
+                                <ItemsPresenter />
+                                <ToggleButton 
+                                    IsChecked="{Binding Items[0].IsChecked}"
+                                    Command="{Binding DataContext.DayGroupToggleCommand, ElementName=PdsBcodeInfo}" 
+                                    Style="{StaticResource Style.ToggleButton.AutoSize.Shadow.NoFade}"
+                                    Margin="2,0,10,5" Padding="4,4,0,4" VerticalAlignment="Stretch">
+                                    <TextBlock 
+                                        Style="{StaticResource Style.BcodeInfo.TextBlock.TextVertical}">
+                                        <Run Text="{Binding Name,Mode=OneWay}" />
+                                        <Run Text="確認" />
+                                    </TextBlock>
+                                </ToggleButton>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.Margin" Value="0,10"/>
+        </Style>
+
+        <Style 
+            x:Key="Style.BcodeInfo.CodeGroup.GroupItem" 
+            TargetType="{x:Type GroupItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <!--<TextBlock Text="{Binding Name}"/>-->
+                            <ItemsPresenter/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.Margin" Value="1,0"/>
+        </Style>
+
+        <Style
+            x:Key="Style.BcodeInfo.NiPic.ListItem" 
+            TargetType="ContentPresenter">
+            <Setter Property="Control.Margin" Value="4"/>
+        </Style>
+
+        <Style
+            x:Key = "Style.BcodeInfo.NiPic.ToggleButton" 
+            BasedOn="{StaticResource Style.ToggleButton.AutoSize.Shadow.NoFade}"
+            TargetType = "ToggleButton" >
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Opacity"  Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate
+            x:Key="DTemplate.BcodeInfo.NiPic.ListItem"
+            DataType="{x:Type sys:String}">
+            <ToggleButton 
+                Style="{StaticResource Style.BcodeInfo.NiPic.ToggleButton}">
+                <ToggleButton.InputBindings>
+                    <MouseBinding 
+                        Gesture="LeftDoubleClick" 
+                        Command="{Binding DataContext.NiPicViewCommand, ElementName=PdsBcodeInfo}" 
+                        CommandParameter="{Binding }"/>
+                </ToggleButton.InputBindings>
+                <Image Source="{Binding }" />
+            </ToggleButton>
+        </DataTemplate>
+
+        <DataTemplate
+            x:Key="DTemplate.BcodeInfo.Med.ListItem"
+            DataType="{x:Type models:Ch_bcode}">
+            <TextBlock 
+                Text="{Binding order_info}"
+                Style="{StaticResource Style.BcodeInfo.TextBlock}"
+                Margin="0,3"/>
+        </DataTemplate>
+
+        <DataTemplate
+            x:Key="DTemplate.BcodeInfo.CodeGroup.ListItem"
+            DataType="{x:Type models:Ch_bcode_codegrp}">
+            <Border Style="{StaticResource Style.Border.Default}">
+                <Grid Width="268">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" SharedSizeGroup="MedListRow" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" SharedSizeGroup="NiPicListRow"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" SharedSizeGroup="RxDtmRow"/>
+                    </Grid.RowDefinitions>
+                    <!--<ItemsControl 
+                        ItemsSource="{Binding medList}"
+                        DisplayMemberPath="order_info"/>-->
+                    <ItemsControl 
+                        ItemsSource="{Binding medList}"
+                        ItemTemplate="{StaticResource DTemplate.BcodeInfo.Med.ListItem}"/>
+                    <Separator Grid.Row="1"/>
+                    <ItemsControl
+                        Grid.Row="2"
+                        ItemsSource="{Binding ni_pic_urlList}"
+                        ItemTemplate="{StaticResource DTemplate.BcodeInfo.NiPic.ListItem}"
+                        ItemContainerStyle="{StaticResource Style.BcodeInfo.NiPic.ListItem}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Separator Grid.Row="3"/>
+                    <TextBlock 
+                        Grid.Row="4"
+                        Visibility="{Binding bcode_code_rx_dtmVisibility}"
+                        Style="{StaticResource Style.BcodeInfo.TextBlock}">
+                        <Run Text="服藥時間" />
+                        <LineBreak/>
+                        <Run Text="{Binding bcode_code_rx_dtm}" />
+                    </TextBlock>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate
+            x:Key="DTemplate.BcodeInfo.DayGroup.ListItem" 
+            DataType="{x:Type models:Ch_bcode_daygrp}">
+            <ItemsControl
+                ItemsSource="{Binding codeList}"
+                ItemTemplate="{StaticResource DTemplate.BcodeInfo.CodeGroup.ListItem}"
+                Grid.IsSharedSizeScope="True">
+                <!--Grid.IsSharedSizeScope="True" 與 ItemTemplate 中 SharedSizeGroup="MedListRow" 搭配，
+                使每個 item 的高度一致-->
+                <ItemsControl.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource Style.BcodeInfo.CodeGroup.GroupItem}">
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                    </GroupStyle>
+                </ItemsControl.GroupStyle>
+            </ItemsControl>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <!--Width="615"-->
+    <ItemsControl
+        ItemsSource="{Binding DayList}"
+        ItemTemplate="{StaticResource DTemplate.BcodeInfo.DayGroup.ListItem}">
+        <ItemsControl.GroupStyle>
+            <GroupStyle ContainerStyle="{StaticResource Style.BcodeInfo.DayGroup.GroupItem}" />
+        </ItemsControl.GroupStyle>
+    </ItemsControl>
+</UserControl>

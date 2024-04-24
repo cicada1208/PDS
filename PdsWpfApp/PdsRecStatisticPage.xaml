@@ -1,0 +1,99 @@
+﻿<Page x:Class="PdsWpfApp.PdsRecStatisticPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:local="clr-namespace:PdsWpfApp"
+      xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+      xmlns:converters="clr-namespace:WpfLib.ValueConverters;assembly=WpfLib" 
+      mc:Ignorable="d" 
+      d:DesignHeight="614" d:DesignWidth="1237"
+      Title="PdsRecStatisticPage">
+
+    <Page.DataContext>
+        <viewmodels:PdsRecStatisticViewModel/>
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button"/>
+        <Style BasedOn="{StaticResource Style.StackPanel.Item}" TargetType="StackPanel"/>
+        <Style BasedOn="{StaticResource Style.DateTimePicker.Slim}" TargetType="{x:Type mah:DateTimePicker}"/>
+        <Style BasedOn="{StaticResource Style.TextBox.Slim}" TargetType="TextBox"/>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Name="ButtonRow"  Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="FilterRow" Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="ListRow" Height="*"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PanningMode="Both">
+            <WrapPanel>
+                <Button Name="QueryButton" Content="查詢"
+                        Command="{Binding QueryCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+                <Button Name="ExportButton" Content="匯出"
+                        Command="{Binding ExportCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+            </WrapPanel>
+        </ScrollViewer>
+        <GridSplitter Grid.Row="1"/>
+        <GroupBox Header="篩選" Grid.Row="2">
+            <WrapPanel>
+                <StackPanel>
+                    <Label Content="作業日期："/>
+                    <mah:DateTimePicker SelectedDateTime="{Binding FilteredParam.pds_rec_op_dtm_begin_begin,
+                                Converter={converters:DateTimeFormatConverter},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="~"/>
+                    <mah:DateTimePicker SelectedDateTime="{Binding FilteredParam.pds_rec_op_dtm_begin_end,
+                                Converter={converters:DateTimeFormatConverter},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="作業及方式："/>
+                    <ComboBox
+                                ItemsSource="{Binding OptionList}"
+                                DisplayMemberPath="StatusName"
+                                SelectedValuePath="Status"
+                                SelectedValue="{Binding FilteredOption}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="護理站："/>
+                    <ComboBox
+                                ItemsSource="{Binding ClinicalList}"
+                                DisplayMemberPath="nid_code"
+                                Text="{Binding FilteredParam.pds_rec_clinical, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Style.ComboBox.Editable}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="病歷號："/>
+                    <TextBox Text="{Binding FilteredParam.pds_rec_pat_no, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="藥品代碼："/>
+                    <ComboBox
+                                ItemsSource="{Binding PrsList}"
+                                DisplayMemberPath="chprs_mst_id"
+                                Text="{Binding FilteredParam.icbcode_fee_key, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Style.ComboBox.Editable}"/>
+                </StackPanel>
+            </WrapPanel>
+        </GroupBox>
+        <GridSplitter Grid.Row="3"/>
+        <DataGrid Name="ListDataGrid" Grid.Row="4"
+                ItemsSource="{Binding RecStatisticList}"
+                SelectionMode="Single" SelectionUnit="FullRow"
+                AutoGenerateColumns="False" CanUserAddRows="False"
+                IsReadOnly="True" />
+        <mah:ProgressRing Grid.Row="4"
+            IsLarge="True" ToolTip="Loading..."
+            Visibility="{Binding ProgressVisibility}"/>
+    </Grid>
+</Page>

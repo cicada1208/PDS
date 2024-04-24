@@ -1,0 +1,201 @@
+﻿<UserControl x:Class="Controls.PdsMedInfoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:local="clr-namespace:Controls"
+             xmlns:models="clr-namespace:Models;assembly=Models" 
+             xmlns:converters="clr-namespace:WpfLib.ValueConverters;assembly=WpfLib" 
+             mc:Ignorable="d" >
+
+    <UserControl.DataContext>
+        <models:PdsMedInfo/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <Style 
+            BasedOn="{StaticResource Style.ToggleButton.AutoSize.Shadow.NoFade}" 
+            TargetType="ToggleButton">
+            <Setter Property ="Padding" Value="8,4"/>
+        </Style>
+        <Style 
+            x:Key = "Style.Button.MedInfo.ToolTip" 
+            BasedOn="{StaticResource Style.Button.AutoSize}" 
+            TargetType="Button">
+            <Setter Property ="Margin" Value="2,5,10,5"/>
+            <Setter Property ="Padding" Value="8,4"/>
+        </Style>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button">
+            <Setter Property ="Margin" Value="30,5"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource Style.Border.Default}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Name="MedName" Height="Auto" MinHeight="36"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Name="MedPic" Height="*" MaxHeight="250"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Name="MainBtn" Height="Auto" MinHeight="33"/>
+            </Grid.RowDefinitions>
+            <ToggleButton 
+                Content="{Binding ch_prs.chprs_id_name}" 
+                IsEnabled="{Binding chkMode}" 
+                IsChecked="{Binding chprs_id_nameChecked}"
+                Command="{Binding ToggleCommand}"
+                ToolTip="{Binding ch_prs.chprs_id_name}"
+                FontSize="20px"/>
+            <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                <ToggleButton Content="{Binding ch_prs.chprs_id_name4}" IsEnabled="False"/>
+                <ToggleButton Content="{Binding ch_prs.chprs_way_name}" IsEnabled="False"/>
+                <ToggleButton 
+                    Content="{Binding mi_micbcode.icbcode_rx_uqty}" 
+                    IsEnabled="{Binding mi_micbcode.icbcode_rx_uqtyEnabled}"
+                    IsChecked="{Binding icbcode_rx_uqtyChecked}"
+                    Command="{Binding ToggleCommand}"/>
+                <ToggleButton Content="{Binding mi_micbcode.icbcode_rx_unit}" IsEnabled="False"/>
+                <ToggleButton Content="{Binding icbcode_rx_way1_final}" IsEnabled="False"/>
+            </WrapPanel>
+            <Separator Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Image Grid.Row="2" Source="{Binding ch_prs.pic_url,
+                Converter={converters:ImageConverter}, Mode=OneWay}"
+                MouseDown="DrugImage_MouseDown" Margin="5,0" />
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Name="Multi" Height="*" MinHeight="62"  />
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Name="QtyPack" Height="*" MinHeight="62" />
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Name="Rehrig" Height="0.6*" MinHeight="36"  />
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Name="Tube"  Height="0.6*" MinHeight="36" />
+                </Grid.RowDefinitions>
+                <!--<ToggleButton Content="{Binding Path=ch_prs.chprs_id_name4}" 
+                ContentStringFormat="多劑型&#x0d;&#x0a;{0}" Height="52"/>-->
+                <ToggleButton 
+                    IsEnabled="{Binding chkMode}" 
+                    Visibility="{Binding ch_prs.chprs_multi_typeVisibility}"
+                    IsChecked="{Binding chprs_multi_typeChecked}"
+                    Command="{Binding ToggleCommand}">
+                    <TextBlock TextAlignment="Center">
+                    <Run Text="多劑型" FontSize="18px" />
+                    <LineBreak/>
+                    <Run Text="{Binding Path=ch_prs.chprs_multi_type_note}" 
+                         FontSize="18px" FontWeight="Bold" Foreground="{DynamicResource Color.Error.Foreground}"/>
+                    </TextBlock>
+                </ToggleButton>
+                <ToggleButton 
+                    Grid.Column="1" 
+                    IsEnabled="{Binding chkMode}" 
+                    Visibility="{Binding ch_prs.chprs_multi_doseVisibility}"
+                    IsChecked="{Binding chprs_multi_doseChecked}"
+                    Command="{Binding ToggleCommand}">
+                    <TextBlock TextAlignment="Center">
+                    <Run Text="多劑量" FontSize="18px" />
+                    <LineBreak/>
+                    <Run Text="{Binding Path=ch_prs.chprs_multi_dose_note}" 
+                         FontSize="18px" FontWeight="Bold" Foreground="{DynamicResource Color.Error.Foreground}"/>
+                    </TextBlock>
+                </ToggleButton>
+                <Separator Grid.Row="1" Grid.ColumnSpan="2" />
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="2" 
+                    Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label Content="總量：" FontSize="40px" FontWeight="Bold"/>
+                    <TextBox 
+                        Text="{Binding qty_packText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding qty_packTextVisibility}"
+                        FontSize="40px" MinWidth="50" Margin="0,0,5,0" 
+                        Background="{Binding qty_packColor}" Foreground="#FFFFFF">
+                        <TextBox.InputBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding QtyPackTextCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <ToggleButton 
+                        Content="{Binding icbcode_rx_qty_final}"
+                        IsEnabled="{Binding qty_packEnabled}" 
+                        Visibility="{Binding icbcode_rx_qty_valVisibility}"
+                        IsChecked="{Binding icbcode_rx_qtyChecked}"
+                        Command="{Binding ToggleCommand}"
+                        FontSize="40px"/>
+                    <ToggleButton 
+                        Content="{Binding mi_micbcode.icbcode_pha_unit}"
+                        Visibility="{Binding mi_micbcode.icbcode_rx_qtyVisibility}"
+                        IsEnabled="False" FontSize="40px"/>
+                    <ToggleButton 
+                        Content="{Binding icbcode_pack_final}"
+                        IsEnabled="{Binding qty_packEnabled}" 
+                        Visibility="{Binding icbcode_pack_valVisibility}"
+                        IsChecked="{Binding icbcode_packChecked}"
+                        Command="{Binding ToggleCommand}"
+                        FontSize="40px"/>
+                    <ToggleButton 
+                        Content="包" 
+                        Visibility="{Binding mi_micbcode.icbcode_packVisibility}"
+                        IsEnabled="False" FontSize="40px"/>
+                </StackPanel>
+                <Separator Grid.Row="3" Grid.ColumnSpan="2" />
+                <ToggleButton 
+                    Grid.Row="4" Grid.Column="0"
+                    Content="冷藏藥品" IsEnabled="False" 
+                    Visibility="{Binding ch_prs.chprs_orig_rehrigVisibility}"
+                    Foreground="{DynamicResource Color.Info.Foreground}" FontSize="18px"/>
+                <ToggleButton 
+                    Grid.Row="4" Grid.Column="1"
+                    Content="磨粉" IsEnabled="False"
+                    Visibility="{Binding mi_micbcode.icbcode_packVisibility}"
+                    Foreground="{DynamicResource Color.Info.Foreground}" FontSize="18px"/>
+                <Grid Grid.Row="6" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button 
+                        Content="腎" IsEnabled="True" 
+                        Visibility="{Binding ch_prs.chprs_renal_funcVisibility}"
+                        Click="ToolTipButton_Click" FontSize="18px"
+                        Style="{StaticResource Style.Button.MedInfo.ToolTip}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{Binding ch_prs.chprs_renal_func_note}"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Grid.Column="1" 
+                        Content="肝" IsEnabled="True"
+                        Visibility="{Binding ch_prs.chprs_liver_funcVisibility}"
+                        Click="ToolTipButton_Click" FontSize="18px"
+                        Style="{StaticResource Style.Button.MedInfo.ToolTip}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{Binding ch_prs.chprs_liver_func_note}" />
+                        </Button.ToolTip>
+                    </Button>
+                </Grid>
+                <Button 
+                    Grid.Row="6" Grid.Column="1"
+                    Content="管灌不宜" IsEnabled="True" 
+                    Visibility="{Binding ch_prs.chprs_tube_feedVisibility}"
+                    Click="ToolTipButton_Click" FontSize="18px"
+                    Style="{StaticResource Style.Button.MedInfo.ToolTip}">
+                    <Button.ToolTip>
+                        <ToolTip Content="{Binding ch_prs.chprs_tube_feed_note}"/>
+                    </Button.ToolTip>
+                </Button>
+            </Grid>
+            <Separator Grid.Row="3" Grid.ColumnSpan="2"/>
+            <WrapPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <Button Name="DrugInfoButton" Content="網頁查詢" Click="DrugInfoButton_Click" />
+                <Button Name="ExpDataButton" Content="健保規範" Click="ExpDataButton_Click" />
+                <Button Name="DrugNewsButton" Content="異動" Click="DrugNewsButton_Click"/>
+                <Button Content="通報" Command="{Binding NoticeCommand}"/>
+            </WrapPanel>
+        </Grid>
+    </Border>
+</UserControl>

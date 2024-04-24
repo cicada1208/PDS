@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="WebUdMisPic">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="searchword" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="WebUdMisPicResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="WebUdMisPicResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="string" nillable="true" type="s:string" />
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="WebUdMisPicSoapIn">
+    <wsdl:part name="parameters" element="tns:WebUdMisPic" />
+  </wsdl:message>
+  <wsdl:message name="WebUdMisPicSoapOut">
+    <wsdl:part name="parameters" element="tns:WebUdMisPicResponse" />
+  </wsdl:message>
+  <wsdl:message name="WebUdMisPicHttpGetIn">
+    <wsdl:part name="searchword" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="WebUdMisPicHttpGetOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:message name="WebUdMisPicHttpPostIn">
+    <wsdl:part name="searchword" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="WebUdMisPicHttpPostOut">
+    <wsdl:part name="Body" element="tns:string" />
+  </wsdl:message>
+  <wsdl:portType name="WebUdMisPicSoap">
+    <wsdl:operation name="WebUdMisPic">
+      <wsdl:input message="tns:WebUdMisPicSoapIn" />
+      <wsdl:output message="tns:WebUdMisPicSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="WebUdMisPicHttpGet">
+    <wsdl:operation name="WebUdMisPic">
+      <wsdl:input message="tns:WebUdMisPicHttpGetIn" />
+      <wsdl:output message="tns:WebUdMisPicHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="WebUdMisPicHttpPost">
+    <wsdl:operation name="WebUdMisPic">
+      <wsdl:input message="tns:WebUdMisPicHttpPostIn" />
+      <wsdl:output message="tns:WebUdMisPicHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebUdMisPicSoap" type="tns:WebUdMisPicSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="WebUdMisPic">
+      <soap:operation soapAction="http://tempuri.org/WebUdMisPic" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebUdMisPicSoap12" type="tns:WebUdMisPicSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="WebUdMisPic">
+      <soap12:operation soapAction="http://tempuri.org/WebUdMisPic" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebUdMisPicHttpGet" type="tns:WebUdMisPicHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="WebUdMisPic">
+      <http:operation location="/WebUdMisPic" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebUdMisPicHttpPost" type="tns:WebUdMisPicHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="WebUdMisPic">
+      <http:operation location="/WebUdMisPic" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebUdMisPic">
+    <wsdl:port name="WebUdMisPicSoap" binding="tns:WebUdMisPicSoap">
+      <soap:address location="http://www.cych.org.tw/pharm/webudmispic.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebUdMisPicSoap12" binding="tns:WebUdMisPicSoap12">
+      <soap12:address location="http://www.cych.org.tw/pharm/webudmispic.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebUdMisPicHttpGet" binding="tns:WebUdMisPicHttpGet">
+      <http:address location="http://www.cych.org.tw/pharm/webudmispic.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebUdMisPicHttpPost" binding="tns:WebUdMisPicHttpPost">
+      <http:address location="http://www.cych.org.tw/pharm/webudmispic.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

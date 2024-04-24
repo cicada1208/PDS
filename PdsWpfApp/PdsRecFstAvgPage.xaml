@@ -1,0 +1,93 @@
+﻿<Page x:Class="PdsWpfApp.PdsRecFstAvgPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:local="clr-namespace:PdsWpfApp"
+      xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+      xmlns:converters="clr-namespace:WpfLib.ValueConverters;assembly=WpfLib" 
+      mc:Ignorable="d" 
+      d:DesignHeight="614" d:DesignWidth="1237"
+      Title="PdsRecFstAvgPage">
+
+    <Page.DataContext>
+        <viewmodels:PdsRecFstAvgViewModel/>
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button"/>
+        <Style BasedOn="{StaticResource Style.StackPanel.Item}" TargetType="StackPanel"/>
+        <Style BasedOn="{StaticResource Style.DatePicker.Slim}" TargetType="DatePicker"/>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Name="ButtonRow"  Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="FilterRow" Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="ListRow" Height="1*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="ChartRow" Height="1*"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PanningMode="Both">
+            <WrapPanel>
+                <Button Name="QueryButton" Content="查詢"
+                        Command="{Binding QueryCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+                <Button Name="ExportButton" Content="匯出"
+                        Command="{Binding ExportCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+            </WrapPanel>
+        </ScrollViewer>
+        <GridSplitter Grid.Row="1"/>
+        <GroupBox Header="篩選" Grid.Row="2">
+            <WrapPanel>
+                <StackPanel>
+                    <Label Content="日期："/>
+                    <DatePicker SelectedDate="{Binding FilteredParam.icfcode_prt_dt_begin_fmt,
+                                Converter={converters:DateFormatConverter},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="~"/>
+                    <DatePicker SelectedDate="{Binding FilteredParam.icfcode_prt_dt_end_fmt,
+                                Converter={converters:DateFormatConverter},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="階段："/>
+                    <ComboBox
+                                ItemsSource="{Binding OptionList}"
+                                DisplayMemberPath="StatusName"
+                                SelectedValuePath="Status"
+                                SelectedValue="{Binding FilteredOption}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="類型："/>
+                    <ComboBox
+                                ItemsSource="{Binding LstTypeList}"
+                                DisplayMemberPath="rec_code_name"
+                                SelectedValuePath="rec_code_short"
+                                SelectedValue="{Binding FilteredParam.icfcode_lst_type}"/>
+                </StackPanel>
+            </WrapPanel>
+        </GroupBox>
+        <GridSplitter Grid.Row="3"/>
+        <DataGrid Name="ListDataGrid" Grid.Row="4"
+            ItemsSource="{Binding FstAvgList}"/>
+        <GridSplitter Grid.Row="5"/>
+        <lvc:CartesianChart Grid.Row="6" 
+            Series="{Binding SeriesCollection}" LegendLocation="Right" Zoom="X"  DisableAnimations="True">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Labels="{Binding ChartLabels}"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="平均時間 (min)"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
+        <mah:ProgressRing Grid.Row="4"
+            IsLarge="True" ToolTip="Loading..."
+            Visibility="{Binding ProgressVisibility}"/>
+    </Grid>
+</Page>

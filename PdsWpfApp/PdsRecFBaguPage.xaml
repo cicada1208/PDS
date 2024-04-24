@@ -1,0 +1,217 @@
+﻿<Page x:Class="PdsWpfApp.PdsRecFBaguPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:local="clr-namespace:PdsWpfApp"
+      xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+      xmlns:converters="clr-namespace:WpfLib.ValueConverters;assembly=WpfLib" 
+      mc:Ignorable="d" 
+      d:DesignHeight="614" d:DesignWidth="1237"
+      Title="PdsRecFBaguPage">
+
+    <Page.DataContext>
+        <viewmodels:PdsRecFBaguViewModel/>
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button"/>
+        <Style BasedOn="{StaticResource Style.DatePicker.Slim}" TargetType="DatePicker"/>
+        <Style BasedOn="{StaticResource Style.TextBox.Slim}" TargetType="TextBox"/>
+        <Style BasedOn="{StaticResource Style.StackPanel.Item}" TargetType="StackPanel"/>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Name="ButtonRow"  Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="FilterRow" Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="ListRow" Height="*"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PanningMode="Both">
+            <WrapPanel>
+                <Button Name="QueryButton" Content="查詢"
+                        Command="{Binding QueryCommand}"/>
+                <Button Name="ExportButton" Content="匯出"
+                        Command="{Binding ExportCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+            </WrapPanel>
+        </ScrollViewer>
+        <GridSplitter Grid.Row="1"/>
+        <GroupBox Header="篩選" Grid.Row="2">
+            <WrapPanel>
+                <StackPanel>
+                    <Label Content="列印日期："/>
+                    <DatePicker SelectedDate="{Binding FilteredParam.pds_rec_send_dt_begin_fmt,
+                                Converter={converters:DateFormatConverter},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="~"/>
+                    <DatePicker SelectedDate="{Binding FilteredParam.pds_rec_send_dt_end_fmt,
+                                Converter={converters:DateFormatConverter},
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="階段："/>
+                    <ComboBox
+                                ItemsSource="{Binding OptionList}"
+                                DisplayMemberPath="StatusName"
+                                SelectedValuePath="Status"
+                                SelectedValue="{Binding FilteredOption}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="領藥號："/>
+                    <TextBox Text="{Binding FilteredParam.icfcode_ipill_no, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="護理站："/>
+                    <ComboBox
+                                ItemsSource="{Binding ClinicalList}"
+                                DisplayMemberPath="nid_code"
+                                Text="{Binding FilteredParam.pds_rec_clinical, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Style.ComboBox.Editable}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="病歷號："/>
+                    <TextBox Text="{Binding FilteredParam.pds_rec_pat_no, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="藥品代碼："/>
+                    <ComboBox
+                                ItemsSource="{Binding PrsList}"
+                                DisplayMemberPath="chprs_mst_id"
+                                Text="{Binding FilteredParam.icbcode_fee_key, 
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Style.ComboBox.Editable}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="狀態："/>
+                    <ComboBox
+                                ItemsSource="{Binding StList}"
+                                DisplayMemberPath="rec_code_name"
+                                SelectedValuePath="rec_code_short"
+                                SelectedValue="{Binding FilteredParam.pds_rec_st}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="原因："/>
+                    <ComboBox
+                                ItemsSource="{Binding ReasonList}"
+                                DisplayMemberPath="rec_code_name"
+                                SelectedValuePath="rec_code_short"
+                                SelectedValue="{Binding FilteredParam.pds_rec_reason}"/>
+                </StackPanel>
+            </WrapPanel>
+        </GroupBox>
+        <GridSplitter Grid.Row="3"/>
+        <DataGrid Name="ListDataGrid" Grid.Row="4"
+                ItemsSource="{Binding BaguList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="列印日期"
+                        Binding="{Binding icfcode_prt_dt_fmt}"/>
+                <DataGridTextColumn Header="階段"
+                        Binding="{Binding pds_rec_op_name}"/>
+                <DataGridTextColumn Header="領藥號"
+                        Binding="{Binding icfcode_ipill_no}"/>
+                <DataGridTextColumn Header="藥袋條碼"
+                        Binding="{Binding icbcode_code}"/>
+                <DataGridTextColumn Header="護理站"
+                        Binding="{Binding pds_rec_clinical}"/>
+                <DataGridTextColumn Header="床號"
+                        Binding="{Binding pds_rec_bed}"/>
+                <DataGridTextColumn Header="病歷號"
+                        Binding="{Binding pds_rec_pat_no}"/>
+                <DataGridTextColumn Header="姓名"
+                        Binding="{Binding pat_name}"/>
+                <DataGridTextColumn Header="藥品類型"
+                        Binding="{Binding icbcode_med_type_name}"/>
+                <DataGridTextColumn Header="藥品代碼"
+                        Binding="{Binding icbcode_fee_key}"/>
+                <DataGridTextColumn Header="頻次"
+                        Binding="{Binding icbcode_rx_way1}"/>
+                <DataGridTextColumn Header="途徑"
+                        Binding="{Binding icbcode_rx_way2}"/>
+                <DataGridTextColumn Header="次劑量"
+                        Binding="{Binding icbcode_rx_uqty}"/>
+                <DataGridTextColumn Header="次劑量單位"
+                        Binding="{Binding icbcode_rx_unit}"/>
+                <DataGridTextColumn Header="總量"
+                        Binding="{Binding icbcode_rx_qty}"/>
+                <DataGridTextColumn Header="總量單位"
+                        Binding="{Binding icbcode_pha_unit}"/>
+                <DataGridTextColumn Header="總包"
+                        Binding="{Binding icbcode_pack}"/>
+                <DataGridTextColumn Header="處方修改：總量/總包"
+                        Binding="{Binding pds_rec_md_qty}"/>
+                <DataGridTextColumn Header="處方修改：頻次"
+                        Binding="{Binding pds_rec_md_way1}"/>
+                <DataGridTextColumn Header="狀態"
+                        Binding="{Binding pds_rec_st_name}"/>
+                <DataGridTextColumn Header="原因"
+                        Binding="{Binding pds_rec_reason_name}"/>
+                <DataGridTextColumn Header="原因(其他)"
+                        Binding="{Binding pds_rec_reason_oth}"/>
+                <DataGridTemplateColumn Header="無法給藥註記">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel  Orientation="Horizontal">
+                                <TextBlock 
+                                    Text="{Binding pds_rec_nondeliver}"
+                                    VerticalAlignment="Center" Margin="0,0,3,0"/>
+                                <Button
+                                    Command="{Binding DataContext.EditNondeliverCommand, ElementName=ListDataGrid}"
+                                    CommandParameter="{Binding SelectedItem, ElementName=ListDataGrid}"
+                                    Visibility="{Binding pds_rec_no,
+                                    Converter={converters:NotEmptyVisibilityConverter}, Mode=OneWay}"
+                                    Style="{StaticResource Style.Button.DataGridPic}">
+                                    <Image Source="/Resources;component/Pic/Edit.png"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="備註">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock 
+                                    Text="{Binding pds_rec_note}" 
+                                    VerticalAlignment="Center" Margin="0,0,3,0"/>
+                                <Button 
+                                    Command="{Binding DataContext.EditNoteCommand, ElementName=ListDataGrid}"
+                                    CommandParameter="{Binding SelectedItem, ElementName=ListDataGrid}"
+                                    Visibility="{Binding pds_rec_no,
+                                    Converter={converters:NotEmptyVisibilityConverter}, Mode=OneWay}"
+                                    Style="{StaticResource Style.Button.DataGridPic}">
+                                    <Image Source="/Resources;component/Pic/Edit.png"/>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="明細">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button 
+                                    Command="{Binding DataContext.DetailCommand, ElementName=ListDataGrid}"
+                                    CommandParameter="{Binding SelectedItem, ElementName=ListDataGrid}"
+                                    Visibility="{Binding pds_rec_no,
+                                    Converter={converters:NotEmptyVisibilityConverter}, Mode=OneWay}"
+                                    Style="{StaticResource Style.Button.DataGridPic}">
+                                <Image Source="/Resources;component/Pic/Search.png"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="藥師"
+                        Binding="{Binding pds_rec_md_name}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <mah:ProgressRing Grid.Row="4"
+            IsLarge="True" ToolTip="Loading..."
+            Visibility="{Binding ProgressVisibility}"/>
+    </Grid>
+</Page>

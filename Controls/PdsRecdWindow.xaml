@@ -1,0 +1,106 @@
+﻿<mah:MetroWindow x:Class="Controls.PdsRecdWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:Controls"
+        xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:PdsRecdViewModel}"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" 
+        Width="1000" Height="400" Title="明細歷程">
+
+    <Window.Resources>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button"/>
+        <Style BasedOn="{StaticResource Style.StackPanel.Item}" TargetType="StackPanel"/>
+        <Style BasedOn="{StaticResource Style.TextBox.Slim}" TargetType="TextBox"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Name="ButtonRow"  Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="FilterRow" Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="ListRow" Height="*"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PanningMode="Both">
+            <WrapPanel>
+                <Button Name="QueryButton" Content="查詢"
+                        Command="{Binding QueryCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+                <Button Name="ExportButton" Content="匯出"
+                        Command="{Binding ExportCommand}"
+                        CommandParameter="{Binding ElementName=ListDataGrid}"/>
+            </WrapPanel>
+        </ScrollViewer>
+        <GridSplitter Grid.Row="1"/>
+        <GroupBox Header="篩選" Grid.Row="2">
+            <WrapPanel>
+                <StackPanel>
+                    <Label Content="配藥單條碼："/>
+                    <TextBox Text="{Binding RecdParam.pds_rec_lst_code, 
+                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="True"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="藥袋條碼："/>
+                    <TextBox Text="{Binding RecdParam.pds_rec_bag_code, 
+                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="True"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="查詢各階段方式："/>
+                    <ComboBox
+                                ItemsSource="{Binding OptionList}"
+                                DisplayMemberPath="StatusName"
+                                SelectedValuePath="Status"
+                                SelectedValue="{Binding RecdParam.DetailMode}"/>
+                </StackPanel>
+            </WrapPanel>
+        </GroupBox>
+        <GridSplitter Grid.Row="3"/>
+        <DataGrid Name="ListDataGrid" Grid.Row="4"
+                ItemsSource="{Binding RecdList}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="動作日期時間"
+                        Binding="{Binding pds_recd_op_dtm}"/>
+                <DataGridTextColumn Header="階段"
+                        Binding="{Binding pds_rec_op_name}"/>
+                <DataGridTextColumn Header="動作"
+                        Binding="{Binding pds_recd_op_name}"/>
+                <DataGridTextColumn Header="藥袋條碼"
+                        Binding="{Binding pds_rec_bag_code}"/>
+                <DataGridTextColumn Header="刷入條碼"
+                        Binding="{Binding pds_recd_code}"/>
+                <DataGridTextColumn Header="刷入藥品代碼"
+                        Binding="{Binding pds_recd_mst_id}"/>
+                <DataGridTextColumn Header="狀態"
+                        Binding="{Binding pds_recd_st_name}"/>
+                <DataGridTextColumn Header="原因"
+                        Binding="{Binding pds_recd_reason_name}"/>
+                <DataGridTextColumn Header="原因(其他)"
+                        Binding="{Binding pds_recd_reason_oth}"/>
+                <DataGridTextColumn Header="無法給藥註記"
+                        Binding="{Binding pds_recd_nondeliver}"/>
+                <DataGridTextColumn Header="處方修改：總量/總包"
+                        Binding="{Binding pds_recd_md_qty}"/>
+                <DataGridTextColumn Header="處方修改：頻次"
+                        Binding="{Binding pds_recd_md_way1}"/>
+                <DataGridTextColumn Header="調劑藥品錯誤：藥品代碼"
+                        Binding="{Binding pds_recd_err_mst_id}"/>
+                <DataGridTextColumn Header="調劑總量錯誤：總量/總包"
+                        Binding="{Binding pds_recd_err_qty}"/>
+                <DataGridTextColumn Header="藥品錯誤：磨粉分包次劑量分子"
+                        Binding="{Binding pds_recd_err_uqty1}"/>
+                <DataGridTextColumn Header="藥品錯誤：磨粉分包次劑量分母"
+                        Binding="{Binding pds_recd_err_uqty2}"/>
+                <DataGridTextColumn Header="藥品錯誤：磨粉分包有效期限"
+                        Binding="{Binding pds_recd_err_expdt}"/>
+                <DataGridTextColumn Header="藥師"
+                        Binding="{Binding pds_recd_md_name}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</mah:MetroWindow>

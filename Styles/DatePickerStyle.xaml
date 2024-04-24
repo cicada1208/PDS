@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.DatePicker.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <Style 
+        x:Key="Style.DatePicker.AutoSize" 
+        BasedOn="{StaticResource MahApps.Styles.DatePicker}"
+        TargetType="DatePicker">
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property = "VerticalAlignment" Value = "Center" />
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter 
+                    Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="mah:TextBoxHelper.ClearTextButton" 
+                    Value="{Binding RelativeSource={RelativeSource Self}, 
+                    Path=(mah:TextBoxHelper.HasText), Mode=OneWay}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style 
+        x:Key="Style.DatePicker.Slim" 
+        BasedOn="{StaticResource Style.DatePicker.AutoSize}"
+        TargetType="DatePicker">
+        <Setter Property="MinWidth" Value="200" />
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,15 @@
+# CYCH .gitignore file
+
+# Project Tracking
+.vs/
+# .vscode
+
+# Artifacts
+bin/
+obj/
+
+# Temp file
+*.tmp
+
+# Log file
+/CychApiService/Logs

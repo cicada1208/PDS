@@ -1,0 +1,92 @@
+﻿<Page x:Class="PdsWpfApp.PdsRecAdjustPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:wi="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:local="clr-namespace:PdsWpfApp"
+      xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+      xmlns:dp="clr-namespace:WpfLib.DependencyProperties;assembly=WpfLib" 
+      xmlns:controls="clr-namespace:Controls;assembly=Controls" 
+      mc:Ignorable="d" 
+      d:DesignHeight="614" d:DesignWidth="1237"
+      Title="PdsRecAdjustPage">
+
+    <Page.DataContext>
+        <viewmodels:PdsRecAdjustViewModel/>
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style BasedOn="{StaticResource Style.TextBox.Slim.Alphanum}" TargetType="TextBox"/>
+        <Style BasedOn="{StaticResource Style.Button.Slim}" TargetType="Button">
+            <Setter Property="Margin" Value="30,0" />
+        </Style>
+        <Style x:Key="Style.StackPanel.PdsRecAdjust" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,5" />
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Name="BagCodeRow" Height="Auto"/>
+            <RowDefinition Name="MedCodeRow" Height="Auto"/>
+            <RowDefinition Name="PackRow" Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="PatInfRow" Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Name="MedInfRow" Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Style="{StaticResource Style.StackPanel.PdsRecAdjust}">
+            <Label Content="藥袋條碼：" />
+            <TextBox 
+                Name="BagCodeTextBox"
+                Text="{Binding BagCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding BagCodeEnabled}"
+                dp:FocusDprop.IsFocused="{Binding BagCodeFocused}">
+                <TextBox.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding BagCodeCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Style="{StaticResource Style.StackPanel.PdsRecAdjust}">
+            <Label Content="藥品條碼：" />
+            <TextBox 
+                Text="{Binding MedCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding MedCodeEnabled}"
+                dp:FocusDprop.IsFocused="{Binding MedCodeFocused}">
+                <TextBox.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding MedCodeCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Content="取消" 
+                    IsEnabled="{Binding BAGCEnabled}"
+                    Command="{Binding BAGCCommand}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Style="{StaticResource Style.StackPanel.PdsRecAdjust}" 
+            Visibility="{Binding PdsMedInfo.mi_micbcode.icbcode_packVisibility}">
+            <Label Content="粉包包數：" />
+            <TextBox 
+                Text="{Binding Pack, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding PackEnabled}"
+                dp:FocusDprop.IsFocused="{Binding PackFocused}">
+                <TextBox.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding PackCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </StackPanel>
+        <GridSplitter Grid.Row="3"/>
+        <GroupBox Header="病人資訊" Grid.Row="4" >
+            <controls:PdsPatInfoControl DataContext="{Binding PdsPatInfo}" 
+                 VerticalAlignment="Center"/>
+        </GroupBox>
+        <GridSplitter Grid.Row="5"/>
+        <GroupBox Header="藥品資訊" Grid.Row="6" >
+            <controls:PdsMedInfoControl DataContext="{Binding PdsMedInfo}"
+                 HorizontalAlignment="Left" VerticalAlignment="top"/>
+        </GroupBox>
+    </Grid>
+</Page>

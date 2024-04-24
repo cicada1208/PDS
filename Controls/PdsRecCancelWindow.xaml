@@ -1,0 +1,121 @@
+﻿<mah:MetroWindow x:Class="Controls.PdsRecCancelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wi="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:Controls"
+        xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels"
+        xmlns:triggers="clr-namespace:WpfLib.Triggers;assembly=WpfLib" 
+        xmlns:dp="clr-namespace:WpfLib.DependencyProperties;assembly=WpfLib" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:PdsRecCancelViewModel}"
+        mc:Ignorable="d" 
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight" Title="{Binding Title}"
+        dp:DialogDprop.DialogResult="{Binding DialogResult}">
+
+    <Window.Resources>
+        <Style BasedOn="{StaticResource Style.ComboBox.Slim}" TargetType="ComboBox"/>
+        <Style BasedOn="{StaticResource Style.TextBox.Slim}" TargetType="TextBox"/>
+        <Style BasedOn="{StaticResource Style.Label.AutoSize}" TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="110" />
+        </Style>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button">
+            <Setter Property="Margin" Value="30,5" />
+        </Style>
+    </Window.Resources>
+
+    <AdornerDecorator>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel
+                Style="{StaticResource Style.StackPanel.Item}">
+                <Label Content="原因：" />
+                <ComboBox
+                    ItemsSource="{Binding ReasonList}"
+                    DisplayMemberPath="rec_code_name"
+                    SelectedValuePath="rec_code_short"
+                    SelectedValue="{Binding pds_rec_reason, ValidatesOnDataErrors=True}"/>
+            </StackPanel>
+            <StackPanel 
+                Grid.Row="1"
+                Visibility="{Binding OtherVisibility}"
+                Style="{StaticResource Style.StackPanel.Item}">
+                <Label Content="其他：" />
+                <TextBox 
+                    Text="{Binding pds_rec_reason_oth, Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            </StackPanel>
+            <StackPanel 
+                Grid.Row="2" 
+                Visibility="{Binding MdVisibility}"
+                Style="{StaticResource Style.StackPanel.Item}"
+                Orientation="Vertical">
+                <StackPanel Style="{StaticResource Style.StackPanel.Item}">
+                    <Label Content="總量/總包：" />
+                    <TextBox 
+                        Text="{Binding pds_rec_md_qty, Mode=TwoWay, 
+                        UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Style="{StaticResource Style.StackPanel.Item}">
+                    <Label Content="頻次：" />
+                    <TextBox 
+                        Text="{Binding pds_rec_md_way1, Mode=TwoWay, 
+                        UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel 
+                Grid.Row="3" 
+                Visibility="{Binding Err_mst_idVisibility}"
+                Style="{StaticResource Style.StackPanel.Item}"
+                Orientation="Vertical">
+                <StackPanel Style="{StaticResource Style.StackPanel.Item}">
+                    <Label Content="錯誤藥品代碼：" />
+                    <ComboBox
+                        ItemsSource="{Binding PrsList}"
+                        DisplayMemberPath="chprs_mst_id"
+                        Text="{Binding pds_recd_err_mst_id, 
+                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                        ValidatesOnDataErrors=True}"
+                        Style="{StaticResource Style.ComboBox.Editable}">
+                        <wi:Interaction.Triggers>
+                            <triggers:RoutedEventTrigger RoutedEvent="TextBoxBase.TextChanged">
+                                <wi:InvokeCommandAction 
+                                    Command="{Binding SelectPrsCommand}"
+                                    CommandParameter="{Binding pds_recd_err_mst_id}"/>
+                            </triggers:RoutedEventTrigger>
+                        </wi:Interaction.Triggers>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Style="{StaticResource Style.StackPanel.Item}">
+                    <Label Content="錯誤藥品名稱：" />
+                    <TextBox Text="{Binding chprs_id_name,
+                        ValidatesOnDataErrors=True}" IsReadOnly="True"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel 
+                Grid.Row="4" 
+                Visibility="{Binding Err_qtyVisibility}"
+                Style="{StaticResource Style.StackPanel.Item}">
+                <Label Content="錯誤總量/總包：" />
+                <TextBox 
+                    Text="{Binding pds_recd_err_qty, Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="確認" Command="{Binding OKCommand}" />
+                <Button Content="取消" IsCancel="True"/>
+            </StackPanel>
+        </Grid>
+    </AdornerDecorator>
+</mah:MetroWindow>

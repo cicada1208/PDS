@@ -1,0 +1,190 @@
+﻿<Page x:Class="StudyWpfApp.MvvmPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:wi="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+      xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+      xmlns:local="clr-namespace:StudyWpfApp"
+      xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+      xmlns:validationrules="clr-namespace:ViewModels.ValidationRules;assembly=ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="1280"
+      Title="MVVMPage">
+    <!--MVVM Light DataContext Binding (置於 Page tag):  
+    DataContext="{Binding MvvmViewModel,Source={StaticResource ViewModelLocator}}"-->
+
+    <!--Event and Command (置於 Page tag):
+    xmlns:wi="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+    xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"-->
+
+    <!--binding View DataContext：在這裡 binding 會提供自動提示的支援-->
+    <Page.DataContext>
+        <viewmodels:MvvmViewModel/>
+    </Page.DataContext>
+
+    <!--定義 Page 層級資源-->
+    <Page.Resources>
+        <!--use another ViewModel-->
+        <viewmodels:ValidationViewModel  x:Key="ValidationViewModel"/>
+
+        <Style BasedOn="{StaticResource Style.TextBox.Slim}" TargetType="TextBox">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style BasedOn="{StaticResource Style.Button.Slim}" TargetType="Button">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+
+        <!--String-->
+        <sys:String x:Key="PageResStr">Page Resources!</sys:String>
+    </Page.Resources>
+
+    <!--AdornerDecorator: To preserved the Validation with TabItem-->
+    <AdornerDecorator>
+        <Grid>
+            <GroupBox x:Name="groupBox" Header="Resources"
+                  HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" >
+                <TextBox x:Name="ResourceTextBox" 
+                     Text="{StaticResource AppResStr}"/>
+            </GroupBox>
+            <GroupBox x:Name="groupBox1" Header="Two Way Binding" 
+                  HorizontalAlignment="Left" Margin="280,5,5,5" VerticalAlignment="Top">
+                <StackPanel Orientation="Vertical">
+                    <TextBox x:Name="textBox1" 
+                         Text="{Binding Text, ElementName=textBox2, Mode=TwoWay}" />
+                    <TextBox x:Name="textBox2" 
+                         Text="{Binding Text, ElementName=textBox1, Mode=TwoWay}" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox x:Name="groupBox2" Header="MVVM" Margin="5,100,0,0">
+                <DockPanel LastChildFill="True">
+                    <Button x:Name="UpdateNameButton" 
+                        Content="Update Name"
+                        Command="{Binding UpdateNameCommand, 
+                        ValidatesOnNotifyDataErrors=False}" 
+                        CommandParameter="{Binding SelectedItem, ElementName=UsersDataGrid}"
+                        DockPanel.Dock="Top"/>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" DockPanel.Dock="Top" />
+                    <TextBox x:Name="IdTextBox"
+                         Text="{Binding SelectedUser.userId, Mode=OneWay}"
+                         DockPanel.Dock="Top" />
+                    <TextBox x:Name="NameTextBox"
+                        Text="{Binding SelectedUser.userTerseName, 
+                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                        ValidatesOnDataErrors=True}"
+                        DockPanel.Dock="Top"/>
+                    <!--<TextBox x:Name="NameTextBox"
+                        Style="{StaticResource TextBoxStyle}" DockPanel.Dock="Top">
+                        <TextBox.Text>
+                            <Binding Path="SelectedUser.userTerseName" 
+                                     Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"
+                                     NotifyOnValidationError="True">
+                                <Binding.ValidationRules>
+                                    <validationrules:RequiredValidationRule ValidatesOnTargetUpdated="True"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>-->
+                    <TextBox  x:Name="TitleTextBox"
+                        Text="{Binding Title, 
+                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                        ValidatesOnDataErrors=True}"
+                        DockPanel.Dock="Top"/>
+                    <TextBox x:Name="PhoneNumberTextBox" 
+                         Text="{Binding PhoneNumber, Source={StaticResource ValidationViewModel}, 
+                         Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                         ValidatesOnDataErrors=True}" 
+                         DockPanel.Dock="Top"/>
+                    <ComboBox x:Name="UsersComboBox"
+                        ItemsSource="{Binding UserList, ValidatesOnNotifyDataErrors=False}"
+                        DisplayMemberPath="userName"
+                        SelectedItem="{Binding SelectedUser, ValidatesOnNotifyDataErrors=False}"
+                        Style="{StaticResource Style.ComboBox.Editable}"
+                        HorizontalAlignment="Left" DockPanel.Dock="Top"/>
+                    <DataGrid x:Name="UsersDataGrid"
+                          ItemsSource="{Binding UserList, ValidatesOnNotifyDataErrors=False}"
+                          SelectedItem="{Binding SelectedUser, ValidatesOnNotifyDataErrors=False}"
+                          SelectionMode="Single"  SelectionUnit="FullRow"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
+                          IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="userId" Width="Auto" IsReadOnly="True"
+                                Binding="{Binding userId, ValidatesOnNotifyDataErrors=False}"/>
+                            <DataGridTextColumn Header="userName" Width="Auto" IsReadOnly="True"
+                                Binding="{Binding userName, ValidatesOnNotifyDataErrors=False}"/>
+                            <DataGridTextColumn Header="userTerseName" Width="Auto"
+                                Binding="{Binding userTerseName,
+                                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
+                                ValidatesOnNotifyDataErrors=False}"/>
+                            <DataGridTemplateColumn Header="systemDt" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding systemDt, StringFormat=\{0:yyyy/MM/dd HH:mm:ss\}, 
+                                            ValidatesOnNotifyDataErrors=False}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <mah:DateTimePicker SelectedDateTime="{Binding systemDt,
+                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                            ValidatesOnNotifyDataErrors=False}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!--1. Code behind: UsersDataGrid_SelectedCellsChanged-->
+                    <!--<DataGrid x:Name="UsersDataGrid" 
+                          ItemsSource="{Binding UserList}"
+                          SelectionMode="Single"  SelectionUnit="Cell"  
+                          SelectedCellsChanged="UsersDataGrid_SelectedCellsChanged" />-->
+
+                    <!--2. ViewMode: Command, CommandParameter: SelectedCells(IList<DataGridCellInfo>)-->
+                    <!--<DataGrid x:Name="UsersDataGrid" 
+                          ItemsSource="{Binding UserList}"
+                          SelectionMode="Single"  SelectionUnit="Cell">
+                    <wi:Interaction.Triggers>
+                        <wi:EventTrigger EventName="SelectedCellsChanged">
+                            <wi:InvokeCommandAction 
+                                Command="{Binding SelectCellCommand}"
+                                CommandParameter="{Binding SelectedCells, ElementName=UsersDataGrid}"/>
+                        </wi:EventTrigger>
+                    </wi:Interaction.Triggers>
+                </DataGrid>-->
+
+                    <!--3. ViewMode: Command, CommandParameter: EventArgs, using MVVM Light-->
+                    <!--<DataGrid x:Name="UsersDataGrid" 
+                          ItemsSource="{Binding UserList}"
+                          SelectionMode="Single"  SelectionUnit="Cell">
+                    <wi:Interaction.Triggers>
+                        <wi:EventTrigger EventName="SelectedCellsChanged">
+                            <cmd:EventToCommand 
+                                Command="{Binding SelectCellEventArgsCommand}" 
+                                PassEventArgsToCommand="True"/>
+                        </wi:EventTrigger>
+                    </wi:Interaction.Triggers>
+                </DataGrid>-->
+
+                    <!--4. ViewMode: call Method, not Command-->
+                    <!--<DataGrid x:Name="UsersDataGrid" 
+                          ItemsSource="{Binding UserList}"
+                          SelectionMode="Single"  SelectionUnit="Cell">
+                    <wi:Interaction.Triggers>
+                        <wi:EventTrigger EventName="SelectedCellsChanged">
+                            <ei:CallMethodAction 
+                                TargetObject="{Binding}"
+                                MethodName="UsersDataGrid_SelectedCellsChanged"/>
+                        </wi:EventTrigger>
+                    </wi:Interaction.Triggers>
+                </DataGrid>-->
+                </DockPanel>
+            </GroupBox>
+        </Grid>
+    </AdornerDecorator>
+
+</Page>

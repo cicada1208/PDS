@@ -1,0 +1,109 @@
+﻿<mah:MetroWindow x:Class="Controls.LstudWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:Controls"
+        xmlns:models="clr-namespace:Models;assembly=Models" 
+        xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:LstudViewModel}"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight" MaxHeight="450" 
+        Title="交互作用">
+
+    <Window.Resources>
+        <Style 
+            BasedOn="{StaticResource Style.TextBox.Wrap}"
+            TargetType="TextBox">
+            <Setter Property="IsReadOnly" Value="True" />
+        </Style>
+
+        <Style 
+            x:Key="Style.Lstud.Icbcode.TextBlock"
+            BasedOn="{StaticResource Style.TextBlock.AutoSize}"
+            TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style 
+            x:Key="Style.Lstud.GradeGroup.GroupItem" 
+            TargetType="{x:Type GroupItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Expander IsExpanded="True">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="級數：" FontWeight="Bold" Foreground="White" />
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsPresenter />
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.Margin" Value="10"/>
+        </Style>
+
+        <DataTemplate
+            x:Key="DTemplate.Lstud.Icbcode.ListItem"
+            DataType="{x:Type models:Mi_micbcode}">
+            <TextBlock
+                Text="{Binding chprs_id_name}"
+                Style="{StaticResource Style.Lstud.Icbcode.TextBlock}"
+                Margin="10"/>
+        </DataTemplate>
+
+        <DataTemplate
+            x:Key="DTemplate.Lstud.GradeGroup.ListItem" 
+            DataType="{x:Type models:Mr_lstud}">
+            <ItemsControl 
+                ItemsSource="{Binding icbcodeList}"
+                ItemTemplate="{StaticResource DTemplate.Lstud.Icbcode.ListItem}"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}"
+                Margin="10">
+            </ItemsControl>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400" />
+            <ColumnDefinition Width="400" />
+        </Grid.ColumnDefinitions>
+        <ListBox
+            ItemsSource="{Binding LstudList}"
+            SelectedItem="{Binding SelectedLstud}"
+            ItemTemplate="{StaticResource DTemplate.Lstud.GradeGroup.ListItem}">
+            <ListBox.GroupStyle>
+                <GroupStyle ContainerStyle="{StaticResource Style.Lstud.GradeGroup.GroupItem}" />
+            </ListBox.GroupStyle>
+        </ListBox>
+        <ScrollViewer Grid.Column="1" PanningMode="Both">
+            <StackPanel Margin="10">
+            <StackPanel Orientation="Horizontal">
+                <Label>
+                    <Label.Content>
+                        <TextBlock>
+                            <Run Text="級數：" />
+                            <Run Text="{Binding Path=SelectedLstud.lstud_grade}"/>
+                        </TextBlock>
+                    </Label.Content>
+                </Label>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <Label Content="影響："/>
+                <TextBox Text="{Binding SelectedLstud.effect}" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <Label Content="處置："/>
+                <TextBox Text="{Binding SelectedLstud.treatment}" />
+            </StackPanel>
+        </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</mah:MetroWindow>

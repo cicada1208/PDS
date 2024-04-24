@@ -1,0 +1,61 @@
+﻿<mah:MetroWindow x:Class="Controls.PdsUdrecChkClinicalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:Controls"
+        xmlns:viewmodels="clr-namespace:ViewModels;assembly=ViewModels" 
+        xmlns:converters="clr-namespace:WpfLib.ValueConverters;assembly=WpfLib" 
+        xmlns:dp="clr-namespace:WpfLib.DependencyProperties;assembly=WpfLib" 
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight" Title="核對護理站"
+        dp:DialogDprop.DialogResult="{Binding DialogResult}">
+
+    <Window.DataContext>
+        <viewmodels:PdsUdrecChkClinicalViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style BasedOn="{StaticResource Style.Button.MainList}" TargetType="Button">
+            <Setter Property="Margin" Value="30,5" />
+        </Style>
+        <Style BasedOn="{StaticResource Style.DatePicker.Slim}" TargetType="DatePicker"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="日期：" />
+            <DatePicker SelectedDate="{Binding Send_dt,
+                Converter={converters:DateFormatConverter},
+                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Content="查詢" 
+                    Command="{Binding QueryCommand}" Margin="5,0" />
+        </StackPanel>
+        <DataGrid Grid.Row="3"
+                ItemsSource="{Binding ClinicalList}"
+                SelectedItem="{Binding SelectedClinical, ValidatesOnDataErrors=True}"
+                SelectionMode="Single" SelectionUnit="FullRow"
+                AutoGenerateColumns="False" CanUserAddRows="False"
+                IsReadOnly="True" MaxHeight="300" Width="{Binding Path=ActualWidth, 
+                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="護理站" Width="*"
+                    Binding="{Binding chudrecchk_bed_unit}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="確認" Command="{Binding OKCommand}"/>
+            <Button Content="取消" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</mah:MetroWindow>

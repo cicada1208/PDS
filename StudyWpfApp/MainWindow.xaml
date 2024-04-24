@@ -1,0 +1,25 @@
+﻿<mah:MetroWindow x:Class="StudyWpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:StudyWpfApp"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" 
+        Height="720" Width="1280">
+
+    <Window.Title>
+        <MultiBinding  StringFormat="{}{0}-{1}  {4}--Version：{2}  --程式啟動時間：{3:yyyy/MM/dd HH:mm}">
+            <Binding Source="{StaticResource CychName}"/>
+            <Binding Source="{StaticResource AppName}"/>
+            <Binding Source="{StaticResource AppVersion}"/>
+            <Binding Source="{x:Static sys:DateTime.Now}"/>
+            <Binding Source="{x:Static local:App.DBFormal}"/>
+        </MultiBinding>
+    </Window.Title>
+
+    <TabControl x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged"/>
+
+</mah:MetroWindow>
